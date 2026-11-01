@@ -66,15 +66,30 @@ def center(n):
     return (x1 + x2) // 2, (y1 + y2) // 2
 
 
-def tap(text, timeout=15):
-    n = find(text, timeout)
-    if n is None:
-        fail(f"element not found: {text!r}")
-        return False
-    x, y = center(n)
-    adb("shell", "input", "tap", str(x), str(y))
-    time.sleep(1)
-    return True
+def tap(text, timeout=15, expect=None):
+    """Taps the element; with expect, retries once if that element does not appear."""
+    for attempt in range(2):
+        n = find(text, timeout)
+        if n is None:
+            fail(f"element not found: {text!r}")
+            return False
+        x, y = center(n)
+        adb("shell", "input", "tap", str(x), str(y))
+        time.sleep(1)
+        if expect is None or find(expect, 10) is not None:
+            return True
+        print(f"   tap on {text!r} did not open {expect!r}, retrying")
+    fail(f"tap on {text!r} did not lead to {expect!r}")
+    return False
+
+
+def dismiss_system_tips():
+    # Android shows a one-time "Viewing full screen" tip that captures key events.
+    n = find("Got it", 3)
+    if n is not None:
+        x, y = center(n)
+        adb("shell", "input", "tap", str(x), str(y))
+        time.sleep(1)
 
 
 def type_text(s):
@@ -122,7 +137,7 @@ shot("home_empty")
 if find("No playlists yet", 10) is None:
     fail("empty home message missing")
 
-tap("add_playlist")
+tap("add_playlist", expect="field_name")
 shot("add_screen")
 if tap("field_name"):
     type_text("Test streams")
@@ -133,9 +148,9 @@ time.sleep(1)
 shot("add_filled")
 tap("save")
 
-if find("Big Buck Bunny", 30):
+if find("Big Buck Bunny", 30) is not None:
     shot("channels")
-    if not find("3 channels", 5):
+    if find("3 channels", 5) is None:
         fail("expected '3 channels' label")
 else:
     shot("channels_missing")
@@ -148,7 +163,7 @@ if tap("search", 5):
     adb("shell", "input", "keyevent", "111")
     time.sleep(2)
     shot("search_bip")
-    if find("Big Buck Bunny", 2):
+    if find("Big Buck Bunny", 2) is not None:
         fail("search did not filter out Big Buck Bunny")
     # clear search
     adb("shell", "input", "keyevent", "KEYCODE_MOVE_END")
@@ -157,8 +172,10 @@ if tap("search", 5):
     adb("shell", "input", "keyevent", "111")
     time.sleep(2)
 
-tap("Big Buck Bunny")
-time.sleep(15)
+tap("Big Buck Bunny", expect=None)
+time.sleep(5)
+dismiss_system_tips()
+time.sleep(10)
 shot("player_bbb")
 check_alive("opening player")
 if "PlayerActivity" not in resumed():
@@ -186,7 +203,7 @@ time.sleep(2)
 adb("shell", "input", "keyevent", "4")
 time.sleep(2)
 shot("home_with_playlist")
-if not find("Test streams", 5):
+if find("Test streams", 5) is None:
     fail("playlist not shown on home")
 
 # relaunch: data must persist
@@ -194,7 +211,7 @@ adb("shell", "am", "force-stop", PKG)
 adb("shell", "am", "start", "-W", "-n", MAIN)
 time.sleep(4)
 shot("after_restart")
-if not find("Test streams", 10):
+if find("Test streams", 10) is None:
     fail("playlist not persisted across restart")
 
 # Arabic UI (per-app locale, API 33+)
@@ -213,10 +230,15 @@ print("---- app log ----")
 print("\n".join(pid_lines[-60:]))
 player_lines = [l for l in log.splitlines() if "IptvPlayer" in l]
 print("\n".join(player_lines[-30:]))
-if "FATAL EXCEPTION" in log:
-    i = log.index("FATAL EXCEPTION")
-    print(log[i:i + 3000])
+# Only crashes of our own process count (uiautomator itself sometimes crashes on the emulator).
+crash = re.search(r"FATAL EXCEPTION[^\n]*\n[^\n]*Process: " + re.escape(PKG), log)
+if crash:
+    print(log[crash.start():crash.start() + 3000])
     fail("app crashed (FATAL EXCEPTION in logcat)")
+for want, what in (("state=3 channel=Big Buck Bunny", "Big Buck Bunny played"),
+                   ("state=3 channel=Apple BipBop", "BipBop played after CH+"),
+                   ("error=", "dead stream reported an error")):
+    print(("ok   " if any(want in l for l in player_lines) else "MISS ") + what)
 if not any("state=3" in l for l in player_lines):
     fail("player never reached STATE_READY (3)")
 
