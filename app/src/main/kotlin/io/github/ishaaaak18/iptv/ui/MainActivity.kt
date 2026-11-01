@@ -16,6 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import io.github.ishaaaak18.iptv.BuildConfig
 import io.github.ishaaaak18.iptv.IptvApp
 import io.github.ishaaaak18.iptv.player.PlayerQueue
 import io.github.ishaaaak18.iptv.ui.add.AddPlaylistScreen
@@ -27,7 +28,10 @@ import io.github.ishaaaak18.iptv.ui.theme.IptvTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        IptvApp.instance.ads.gatherConsentAndInit(this)
+        // Debug builds only: UI tests can turn ads off, since an animated banner keeps
+        // the screen from ever going idle for uiautomator.
+        val adsOff = BuildConfig.DEBUG && intent.getBooleanExtra("disable_ads", false)
+        if (!adsOff) IptvApp.instance.ads.gatherConsentAndInit(this)
         setContent {
             IptvTheme {
                 Surface(Modifier.fillMaxSize().semantics { testTagsAsResourceId = true }, color = MaterialTheme.colorScheme.background) {

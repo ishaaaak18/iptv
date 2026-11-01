@@ -30,7 +30,9 @@ def adb(*args, check=True):
 
 
 def dump():
-    adb("shell", "uiautomator", "dump", "/sdcard/ui.xml", check=False)
+    r = adb("shell", "uiautomator", "dump", "/sdcard/ui.xml", check=False)
+    if "dumped" not in r:
+        print("   uiautomator:", r.strip()[:200])
     xml = adb("shell", "cat", "/sdcard/ui.xml", check=False)
     start = xml.find("<?xml")
     if start < 0:
@@ -131,7 +133,7 @@ def check_alive(where):
 
 # ---------------------------------------------------------------- run
 adb("logcat", "-c")
-adb("shell", "am", "start", "-W", "-n", MAIN)
+adb("shell", "am", "start", "-W", "-n", MAIN, "--ez", "disable_ads", "true")
 time.sleep(4)
 shot("home_empty")
 if find("No playlists yet", 10) is None:
@@ -208,7 +210,7 @@ if find("Test streams", 5) is None:
 
 # relaunch: data must persist
 adb("shell", "am", "force-stop", PKG)
-adb("shell", "am", "start", "-W", "-n", MAIN)
+adb("shell", "am", "start", "-W", "-n", MAIN, "--ez", "disable_ads", "true")
 time.sleep(4)
 shot("after_restart")
 if find("Test streams", 10) is None:
@@ -217,7 +219,7 @@ if find("Test streams", 10) is None:
 # Arabic UI (per-app locale, API 33+)
 adb("shell", "cmd", "locale", "set-app-locales", PKG, "--locales", "ar", check=False)
 adb("shell", "am", "force-stop", PKG)
-adb("shell", "am", "start", "-W", "-n", MAIN)
+adb("shell", "am", "start", "-W", "-n", MAIN, "--ez", "disable_ads", "true")
 time.sleep(4)
 shot("arabic_home")
 
