@@ -198,7 +198,11 @@ shot("back_to_list")
 check_alive("closing player")
 
 # favorites: mark the first channel, check the Favorites group shows it
-if tap("Favorites", 5):  # heart icon on the first row
+heart = next((n for n in nodes(dump()) if n.get("content-desc") == "Favorites"), None)  # heart on first row
+if heart is not None:
+    x, y = center(heart)
+    adb("shell", "input", "tap", str(x), str(y))
+    time.sleep(1)
     tap("group_Favorites", 5)
     time.sleep(2)
     shot("favorites")
