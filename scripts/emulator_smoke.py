@@ -197,12 +197,14 @@ time.sleep(3)
 shot("back_to_list")
 check_alive("closing player")
 
-# favorites
-if tap("group_Favorites", 5):
-    pass
-adb("shell", "input", "keyevent", "4")
-time.sleep(2)
-adb("shell", "input", "keyevent", "4")
+# favorites: mark the first channel, check the Favorites group shows it
+if tap("Favorites", 5):  # heart icon on the first row
+    tap("group_Favorites", 5)
+    time.sleep(2)
+    shot("favorites")
+    if find("1 channels", 5) is None:
+        fail("Favorites group should contain 1 channel")
+adb("shell", "input", "keyevent", "4")  # back to home
 time.sleep(2)
 shot("home_with_playlist")
 if find("Test streams", 5) is None:
