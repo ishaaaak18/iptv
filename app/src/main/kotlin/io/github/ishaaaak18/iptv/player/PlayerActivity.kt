@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.util.Rational
 import android.view.Gravity
 import android.view.KeyEvent
@@ -150,10 +151,12 @@ class PlayerActivity : ComponentActivity() {
     private val listener = object : Player.Listener {
         override fun onPlaybackStateChanged(state: Int) {
             if (state == Player.STATE_READY) retries = 0
+            Log.i(TAG, "state=$state channel=${PlayerQueue.channels.getOrNull(PlayerQueue.index)?.name}")
         }
 
         override fun onPlayerError(error: PlaybackException) {
             val p = player ?: return
+            Log.w(TAG, "error=${error.errorCodeName} retries=$retries")
             if (error.errorCode == PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW) {
                 p.seekToDefaultPosition()
                 p.prepare()
@@ -209,6 +212,7 @@ class PlayerActivity : ComponentActivity() {
 
     companion object {
         private const val MAX_RETRIES = 5
+        private const val TAG = "IptvPlayer"
 
         fun intent(context: Context, playlistId: String, channels: List<Channel>, index: Int): Intent {
             PlayerQueue.playlistId = playlistId
