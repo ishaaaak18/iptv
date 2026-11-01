@@ -92,7 +92,8 @@ def shot(name):
     lines = [f"{n.get('class')} [{label(n)}] {n.get('bounds')}" for n in nodes(root) if label(n)]
     with open(base + ".txt", "w") as f:
         f.write("\n".join(lines))
-    print(f"-- screen {base}  (top: {resumed().strip()})")
+    focus = re.findall(r"mCurrentFocus=[^\n]*", adb("shell", "dumpsys", "window", "windows"))
+    print(f"-- screen {base}  (top: {resumed().strip()}) focus: {focus[:1]}")
     for l in lines[:25]:
         print("     ", l)
 
@@ -207,6 +208,9 @@ shot("arabic_home")
 log = adb("logcat", "-d")
 with open(f"{OUT}/logcat.txt", "w") as f:
     f.write(log)
+pid_lines = [l for l in log.splitlines() if re.search(r"IptvPlayer|IptvUi|AdsManager|UserMessagingPlatform|Consent|AndroidRuntime|System.err", l)]
+print("---- app log ----")
+print("\n".join(pid_lines[-60:]))
 player_lines = [l for l in log.splitlines() if "IptvPlayer" in l]
 print("\n".join(player_lines[-30:]))
 if "FATAL EXCEPTION" in log:

@@ -63,6 +63,7 @@ class AdsManager(private val context: Context) {
             activity,
             ConsentRequestParameters.Builder().build(),
             {
+                Log.i(TAG, "consent status=${consent.consentStatus} canRequestAds=${consent.canRequestAds()}")
                 UserMessagingPlatform.loadAndShowConsentFormIfRequired(activity) { error ->
                     if (error != null) Log.w(TAG, "Consent form: ${error.message}")
                     if (consent.canRequestAds()) initSdk()

@@ -4,6 +4,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.semantics.semantics
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,7 +35,10 @@ class MainActivity : ComponentActivity() {
                     NavHost(nav, startDestination = "home") {
                         composable("home") {
                             HomeScreen(
-                                onAdd = { nav.navigate("add") },
+                                onAdd = {
+                                    Log.i("IptvUi", "navigate add")
+                                    nav.navigate("add")
+                                },
                                 onOpen = { id -> nav.navigate("channels/$id") },
                             )
                         }
