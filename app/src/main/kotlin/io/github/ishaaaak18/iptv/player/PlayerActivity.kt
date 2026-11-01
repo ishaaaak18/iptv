@@ -51,7 +51,7 @@ object PlayerQueue {
 class PlayerActivity : ComponentActivity() {
 
     private lateinit var playerView: PlayerView
-    private lateinit var overlay: TextView
+    private lateinit var infoText: TextView
     private var player: ExoPlayer? = null
     private val http = DefaultHttpDataSource.Factory()
         .setAllowCrossProtocolRedirects(true)
@@ -60,7 +60,7 @@ class PlayerActivity : ComponentActivity() {
 
     private val handler = Handler(Looper.getMainLooper())
     private var retries = 0
-    private val hideOverlay = Runnable { overlay.visibility = View.GONE }
+    private val hideOverlay = Runnable { infoText.visibility = View.GONE }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,7 +81,7 @@ class PlayerActivity : ComponentActivity() {
             setShowBuffering(PlayerView.SHOW_BUFFERING_ALWAYS)
             keepScreenOn = true
         }
-        overlay = TextView(this).apply {
+        infoText = TextView(this).apply {
             setTextColor(Color.WHITE)
             textSize = 20f
             setBackgroundColor(0x99000000.toInt())
@@ -91,7 +91,7 @@ class PlayerActivity : ComponentActivity() {
         setContentView(FrameLayout(this).apply {
             addView(playerView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
             addView(
-                overlay,
+                infoText,
                 FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.START)
                     .apply { setMargins(48, 48, 48, 48) },
             )
@@ -172,8 +172,8 @@ class PlayerActivity : ComponentActivity() {
 
     private fun showOverlay(text: String, sticky: Boolean = false) {
         handler.removeCallbacks(hideOverlay)
-        overlay.text = text
-        overlay.visibility = View.VISIBLE
+        infoText.text = text
+        infoText.visibility = View.VISIBLE
         if (!sticky) handler.postDelayed(hideOverlay, 3000)
     }
 
@@ -204,7 +204,7 @@ class PlayerActivity : ComponentActivity() {
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         playerView.useController = !isInPictureInPictureMode
-        if (isInPictureInPictureMode) overlay.visibility = View.GONE
+        if (isInPictureInPictureMode) infoText.visibility = View.GONE
     }
 
     companion object {
