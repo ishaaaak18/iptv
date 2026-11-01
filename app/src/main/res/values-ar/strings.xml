@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">مشغل IPTV</string>
+    <string name="playlists">قوائمي</string>
+    <string name="add_playlist">إضافة قائمة</string>
+    <string name="empty_playlists">لا توجد قوائم بعد. هذا التطبيق لا يوفّر أي قنوات: أضف رابط M3U أو حساب Xtream الخاص بك.</string>
+    <string name="delete">حذف</string>
+    <string name="refresh">تحديث</string>
+    <string name="cancel">إلغاء</string>
+    <string name="save">حفظ</string>
+    <string name="name">الاسم</string>
+    <string name="m3u_link">رابط M3U</string>
+    <string name="xtream">حساب Xtream</string>
+    <string name="server">السيرفر (http://host:port)</string>
+    <string name="username">اسم المستخدم</string>
+    <string name="password">كلمة المرور</string>
+    <string name="link_hint">الصق رابط M3U أو رابط get.php</string>
+    <string name="check_account">فحص الحساب</string>
+    <string name="account_status">الحالة: %1$s</string>
+    <string name="account_expiry">ينتهي في: %1$s</string>
+    <string name="account_unlimited">غير محدود</string>
+    <string name="account_connections">الاتصالات: %1$d / %2$s</string>
+    <string name="invalid_input">تحقق من الرابط أو بيانات الحساب</string>
+    <string name="loading">جارٍ التحميل…</string>
+    <string name="error_loading">تعذّر التحميل: %1$s</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="search">ابحث عن قناة</string>
+    <string name="all">الكل</string>
+    <string name="favorites">المفضلة</string>
+    <string name="recent">الأخيرة</string>
+    <string name="channels_count">%1$d قناة</string>
+    <string name="no_channels">لا توجد قنوات مطابقة</string>
+    <string name="player_buffering">جارٍ التحميل…</string>
+    <string name="player_reconnecting">انقطع الاتصال، إعادة المحاولة (%1$d)…</string>
+    <string name="player_failed">البث غير متاح</string>
+    <string name="disclaimer">هذا التطبيق مشغّل فقط ولا يحتوي على أي محتوى. أنت مسؤول عن المصادر التي تضيفها.</string>
+</resources>

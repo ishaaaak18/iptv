@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IPTV Player</string>
+    <string name="playlists">My playlists</string>
+    <string name="add_playlist">Add playlist</string>
+    <string name="empty_playlists">No playlists yet. This app does not provide any channels: add your own M3U link or Xtream account.</string>
+    <string name="delete">Delete</string>
+    <string name="refresh">Refresh</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="name">Name</string>
+    <string name="m3u_link">M3U link</string>
+    <string name="xtream">Xtream account</string>
+    <string name="server">Server (http://host:port)</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="link_hint">Paste an M3U or get.php link</string>
+    <string name="check_account">Check account</string>
+    <string name="account_status">Status: %1$s</string>
+    <string name="account_expiry">Expires: %1$s</string>
+    <string name="account_unlimited">Unlimited</string>
+    <string name="account_connections">Connections: %1$d / %2$s</string>
+    <string name="invalid_input">Check the link or account details</string>
+    <string name="loading">Loading…</string>
+    <string name="error_loading">Could not load: %1$s</string>
+    <string name="retry">Retry</string>
+    <string name="search">Search channels</string>
+    <string name="all">All</string>
+    <string name="favorites">Favorites</string>
+    <string name="recent">Recent</string>
+    <string name="channels_count">%1$d channels</string>
+    <string name="no_channels">No channels match</string>
+    <string name="player_buffering">Loading…</string>
+    <string name="player_reconnecting">Connection lost, retrying (%1$d)…</string>
+    <string name="player_failed">Stream unavailable</string>
+    <string name="disclaimer">This app is a player only and contains no content. You are responsible for the sources you add.</string>
+</resources>
