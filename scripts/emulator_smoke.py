@@ -32,9 +32,14 @@ def adb(*args, check=True):
 def dump():
     adb("shell", "uiautomator", "dump", "/sdcard/ui.xml", check=False)
     xml = adb("shell", "cat", "/sdcard/ui.xml", check=False)
+    start = xml.find("<?xml")
+    if start < 0:
+        start = xml.find("<hierarchy")
     try:
-        return ET.fromstring(xml[xml.index("<?xml"):] if "<?xml" in xml else xml)
-    except Exception:
+        # bytes, not str: ElementTree rejects str input that carries an encoding declaration
+        return ET.fromstring(xml[max(start, 0):].encode("utf-8"))
+    except Exception as e:
+        print("ui dump parse error:", e, xml[:200].replace("\n", " "))
         return None
 
 
@@ -84,11 +89,12 @@ def shot(name):
     adb("shell", "screencap", "-p", "/sdcard/s.png")
     adb("pull", "/sdcard/s.png", base + ".png")
     root = dump()
+    lines = [f"{n.get('class')} [{label(n)}] {n.get('bounds')}" for n in nodes(root) if label(n)]
     with open(base + ".txt", "w") as f:
-        for n in nodes(root):
-            if label(n):
-                f.write(f"{n.get('class')} [{label(n)}] {n.get('bounds')}\n")
-    print(f"-- screenshot {base}.png")
+        f.write("\n".join(lines))
+    print(f"-- screen {base}  (top: {resumed().strip()})")
+    for l in lines[:25]:
+        print("     ", l)
 
 
 def resumed():
@@ -112,7 +118,7 @@ adb("logcat", "-c")
 adb("shell", "am", "start", "-W", "-n", MAIN)
 time.sleep(4)
 shot("home_empty")
-if not find("No playlists yet", 10):
+if find("No playlists yet", 10) is None:
     fail("empty home message missing")
 
 tap("Add playlist")
