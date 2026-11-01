@@ -1,5 +1,6 @@
 package io.github.ishaaaak18.iptv.ui.add
 
+import androidx.compose.ui.platform.testTag
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -101,14 +102,14 @@ fun AddPlaylistScreen(onDone: (String) -> Unit, onCancel: () -> Unit) {
             }
             OutlinedTextField(
                 value = name, onValueChange = { name = it }, singleLine = true,
-                label = { Text(stringResource(R.string.name)) }, modifier = Modifier.fillMaxWidth(),
+                label = { Text(stringResource(R.string.name)) }, modifier = Modifier.fillMaxWidth().testTag("field_name"),
             )
             if (tab == 0) {
                 OutlinedTextField(
                     value = link, onValueChange = { link = it },
                     label = { Text(stringResource(R.string.link_hint)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().testTag("field_link"),
                 )
             } else {
                 OutlinedTextField(
@@ -131,6 +132,7 @@ fun AddPlaylistScreen(onDone: (String) -> Unit, onCancel: () -> Unit) {
 
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
                 Button(
+                    modifier = Modifier.testTag("save"),
                     enabled = !busy,
                     onClick = {
                         val source = currentSource()
@@ -187,7 +189,7 @@ fun AddPlaylistScreen(onDone: (String) -> Unit, onCancel: () -> Unit) {
                 if (busy) CircularProgressIndicator(Modifier.size(24.dp))
             }
 
-            message?.let { Text(it, style = MaterialTheme.typography.bodyMedium) }
+            message?.let { Text(it, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("message")) }
             Text(
                 stringResource(R.string.disclaimer),
                 style = MaterialTheme.typography.bodySmall,

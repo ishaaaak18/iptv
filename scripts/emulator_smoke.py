@@ -48,7 +48,7 @@ def nodes(root):
 
 
 def label(n):
-    return " | ".join(v for v in (n.get("text"), n.get("content-desc"), n.get("hint")) if v)
+    return " | ".join(v for v in (n.get("text"), n.get("content-desc"), n.get("hint"), n.get("resource-id")) if v)
 
 
 def find(text, timeout=15):
@@ -121,16 +121,16 @@ shot("home_empty")
 if find("No playlists yet", 10) is None:
     fail("empty home message missing")
 
-tap("Add playlist")
+tap("add_playlist")
 shot("add_screen")
-if tap("Name"):
+if tap("field_name"):
     type_text("Test streams")
-if tap("Paste an M3U"):
+if tap("field_link"):
     type_text(PLAYLIST_URL)
 adb("shell", "input", "keyevent", "111")  # ESC: hide keyboard
 time.sleep(1)
 shot("add_filled")
-tap("Save")
+tap("save")
 
 if find("Big Buck Bunny", 30):
     shot("channels")
@@ -138,10 +138,11 @@ if find("Big Buck Bunny", 30):
         fail("expected '3 channels' label")
 else:
     shot("channels_missing")
-    fail("channel list did not appear")
+    m = find("message", 2)
+    fail("channel list did not appear" + (f" (message: {m.get('text')})" if m is not None else ""))
 
 # search filter
-if tap("Search channels", 5):
+if tap("search", 5):
     type_text("bip")
     adb("shell", "input", "keyevent", "111")
     time.sleep(2)
@@ -177,7 +178,7 @@ shot("back_to_list")
 check_alive("closing player")
 
 # favorites
-if tap("Favorites", 5):
+if tap("group_Favorites", 5):
     pass
 adb("shell", "input", "keyevent", "4")
 time.sleep(2)

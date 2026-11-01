@@ -1,5 +1,6 @@
 package io.github.ishaaaak18.iptv.ui.home
 
+import androidx.compose.ui.platform.testTag
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -56,6 +57,7 @@ fun HomeScreen(onAdd: () -> Unit, onOpen: (String) -> Unit) {
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = onAdd,
+                modifier = Modifier.testTag("add_playlist"),
                 icon = { Icon(Icons.Default.Add, null) },
                 text = { Text(stringResource(R.string.add_playlist)) },
             )

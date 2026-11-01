@@ -1,5 +1,6 @@
 package io.github.ishaaaak18.iptv.ui.channels
 
+import androidx.compose.ui.platform.testTag
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -89,7 +90,7 @@ fun ChannelsScreen(playlistId: String, onBack: () -> Unit, vm: ChannelsViewModel
                 leadingIcon = { Icon(Icons.Default.Search, null) },
                 placeholder = { Text(stringResource(R.string.search)) },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp).testTag("search"),
             )
             val pseudo = listOf(
                 GROUP_ALL to stringResource(R.string.all),
@@ -102,6 +103,7 @@ fun ChannelsScreen(playlistId: String, onBack: () -> Unit, vm: ChannelsViewModel
             ) {
                 items(pseudo + groups.map { it to it }, key = { it.first }) { (key, label) ->
                     FilterChip(
+                        modifier = Modifier.testTag("group_$label"),
                         selected = selected == key,
                         onClick = { vm.group.value = key },
                         label = { Text(label, maxLines = 1) },
@@ -158,6 +160,7 @@ private fun ChannelRow(channel: Channel, favorite: Boolean, onPlay: () -> Unit, 
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surface)
+            .testTag("channel_row")
             .tvClickable(onPlay)
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,

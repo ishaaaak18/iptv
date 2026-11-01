@@ -1,5 +1,8 @@
 package io.github.ishaaaak18.iptv.ui
 
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.semantics.semantics
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,13 +22,14 @@ import io.github.ishaaaak18.iptv.ui.channels.ChannelsScreen
 import io.github.ishaaaak18.iptv.ui.home.HomeScreen
 import io.github.ishaaaak18.iptv.ui.theme.IptvTheme
 
+@OptIn(ExperimentalComposeUiApi::class)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         IptvApp.instance.ads.gatherConsentAndInit(this)
         setContent {
             IptvTheme {
-                Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                Surface(Modifier.fillMaxSize().semantics { testTagsAsResourceId = true }, color = MaterialTheme.colorScheme.background) {
                     val nav = rememberNavController()
                     NavHost(nav, startDestination = "home") {
                         composable("home") {
